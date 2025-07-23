@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Visual Love Unveiling</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* Envelope */
+    #envelope {
+      width: 120px;
+      height: 80px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: float 6s ease-in-out infinite;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .heart-seal {
+      font-size: 24px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+      50% { transform: translate(-50%, -50%) translateY(-10px); }
+    }
+
+    /* Main Image */
+    #mainImage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 60vw;
+      max-height: 60vh;
+      filter: blur(8px);
+      transition: filter 1s ease;
+      cursor: pointer;
+      display: none;
+      z-index: 5;
+    }
+
+    /* Companion Images */
+    .companion {
+      position: absolute;
+      width: 100px;
+      height: auto;
+      opacity: 0;
+      transition: opacity 1.5s ease, top 1.5s ease, left 1.5s ease;
+      z-index: 0;
+      cursor: pointer;
+    }
+
+    .companion img {
+      width: 100%;
+      filter: blur(8px);
+      transition: filter 1s ease;
+    }
+
+    .companion img.revealed {
+      filter: blur(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Envelope -->
+  <div id="envelope">
+    <div class="heart-seal">❤️</div>
+  </div>
+
+  <!-- Main Image -->
+  <img src="oip1.jpg" id="mainImage" onclick="revealMain(this)" />
+
+  <!-- Companions -->
+  <div class="companion"><img src="image2.jpg" onclick="revealCompanion(this)"></div>
+  <div class="companion"><img src="image3.jpg" onclick="revealCompanion(this)"></div>
+  <div class="companion"><img src="image4.jpg" onclick="revealCompanion(this)"></div>
+
+  <script>
+    // Envelope click: reveal main image
+    document.getElementById('envelope').addEventListener('click', () => {
+      document.getElementById('envelope').style.display = 'none';
+      document.getElementById('mainImage').style.display = 'block';
+    });
+
+    // Reveal main image + companions after 1s
+    function revealMain(el) {
+      el.style.filter = 'blur(0)';
+
+      setTimeout(() => {
+        const companions = document.querySelectorAll('.companion');
+        companions.forEach(companion => {
+          const x = Math.random() * 80;
+          const y = Math.random() * 80;
+          companion.style.top = `${y}%`;
+          companion.style.left = `${x}%`;
+          companion.style.opacity = '1';
+        });
+      }, 1000);
+    }
+
+    // Individual companion reveal
+    function revealCompanion(img) {
+      img.classList.add('revealed');
+    }
+  </script>
+</body>
+</html>

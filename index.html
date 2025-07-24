@@ -1,124 +1,177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Visual Love Unveiling</title>
+  <meta charset="UTF-8">
+  <title>Carta</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+      padding: 0;
+      height: 100vh;
+      background-color: #111;
+      font-family: sans-serif;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
     }
 
     /* Envelope */
     #envelope {
-      width: 120px;
-      height: 80px;
-      background: #000000;
-      border: 2px solid #ccc;
-      border-radius: 6px;
       position: absolute;
-      top: 40%;
+      top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      animation: float 6s ease-in-out infinite;
+      transform: translate(-50%, -50%) scale(1);
+      width: 240px;
+      height: 160px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
+      z-index: 4;
+      transition: transform 1s ease, opacity 0.8s ease;
+      -webkit-transition: transform 1s ease, opacity 0.8s ease;
     }
 
-    .heart-seal {
-      font-size: 24px;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-      50% { transform: translate(-50%, -50%) translateY(-10px); }
-    }
-
-    /* Main Image */
-    #mainImage {
+    #seal {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      max-width: 60vw;
-      max-height: 60vh;
-      filter: blur(8px);
-      transition: filter 1s ease;
-      cursor: pointer;
-      display: none;
-      z-index: 5;
+      font-size: 2.5em;
+      color: red;
+      background: white;
+      border-radius: 50%;
+      padding: 6px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.3);
     }
 
-    /* Companion Images */
-    .companion {
+    /* Letter background */
+    #letter {
       position: absolute;
-      width: 100px;
-      height: auto;
-      opacity: 0;
-      transition: opacity 1.5s ease, top 1.5s ease, left 1.5s ease;
-      z-index: 0;
-      cursor: pointer;
-    }
-
-    .companion img {
+      top: 0;
+      left: 0;
       width: 100%;
-      filter: blur(8px);
-      transition: filter 1s ease;
+      height: 100vh;
+      background-color: #000;
+      background-image: url('your-image-v3.jpeg');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      -webkit-transition: opacity 1s ease-in-out;
+      z-index: 1;
     }
 
-    .companion img.revealed {
-      filter: blur(0);
+    #lyric {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      max-width: 80%;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 16px 22px;
+      border-radius: 12px;
+      color: #cf6ba9;
+      font-size: 2em;
+      font-family: 'Brush Script MT', cursive;
+      text-shadow: 2px 2px 6px #000;
+      opacity: 0;
+      transition: opacity 0.6s ease-in-out;
+      -webkit-transition: opacity 0.6s ease-in-out;
+      z-index: 2;
+    }
+
+    /* Intro video */
+    #introVideo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      opacity: 0;
+      transition: opacity 3s ease;
+      z-index: 3;
     }
   </style>
 </head>
 <body>
 
-  <!-- Envelope -->
+  <!-- Envelope with heart seal -->
   <div id="envelope">
-    <div class="heart-seal">❤️</div>
+    <div id="seal">❤️</div>
   </div>
 
-  <!-- Main Image -->
-  <img src="oip1.jpeg" id="mainImage" onclick="revealMain(this)" />
+  <!-- Letter reveal with image, audio & lyrics -->
+  <div id="letter">
+    <audio id="bg-audio" preload="auto">
+      <source src="te-presumo-v2.MP3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+    <div id="lyric">Te presumo porque un verdadero amor nunca se esconde</div>
+  </div>
 
-  <!-- Companions -->
-  <div class="companion"><img src="oip2.jpg" onclick="revealCompanion(this)"></div>
-  <div class="companion"><img src="oip3.jpg" onclick="revealCompanion(this)"></div>
-  <div class="companion"><img src="oip4.jpg" onclick="revealCompanion(this)"></div>
+  <!-- Intro video fades in and out -->
+  <video id="introVideo" src="no-me-dejes.mp4" autoplay muted playsinline></video>
 
   <script>
-    // Envelope click: reveal main image
-    document.getElementById('envelope').addEventListener('click', () => {
-      document.getElementById('envelope').style.display = 'none';
-      document.getElementById('mainImage').style.display = 'block';
-    });
+    const envelope = document.getElementById('envelope');
+    const letter = document.getElementById('letter');
+    const audio = document.getElementById('bg-audio');
+    const lyric = document.getElementById('lyric');
+    const video = document.getElementById('introVideo');
 
-    // Reveal main image + companions after 1s
-    function revealMain(el) {
-      el.style.filter = 'blur(0)';
+    envelope.addEventListener('click', () => {
+      envelope.style.transform = 'translate(-50%, -50%) scale(0.1)';
+      envelope.style.opacity = '0';
 
+      // Start video fade-in
+      video.style.opacity = '1';
+      video.currentTime = 0;
+      video.play();
+
+      // Fade-out after 3 seconds
       setTimeout(() => {
-        const companions = document.querySelectorAll('.companion');
-        companions.forEach(companion => {
-          const x = Math.random() * 80;
-          const y = Math.random() * 80;
-          companion.style.top = `${y}%`;
-          companion.style.left = `${x}%`;
-          companion.style.opacity = '1';
+        video.style.opacity = '0';
+      }, 3000);
+
+      // Reveal letter and start audio after delay
+      setTimeout(() => {
+        envelope.style.display = 'none';
+        letter.style.opacity = '1';
+
+        audio.currentTime = 50;
+        audio.volume = 0;
+        audio.play().then(() => {
+          const fadeInDuration = 2000;
+          const interval = 100;
+          const step = 1 / (fadeInDuration / interval);
+          const fadeIn = setInterval(() => {
+            audio.volume = Math.min(audio.volume + step, 1.0);
+            if (audio.volume >= 1.0) clearInterval(fadeIn);
+          }, interval);
+        }).catch(err => {
+          console.warn("Playback error:", err);
         });
       }, 1000);
-    }
+    });
 
-    // Individual companion reveal
-    function revealCompanion(img) {
-      img.classList.add('revealed');
-    }
+    audio.addEventListener('timeupdate', () => {
+      const t = audio.currentTime;
+
+      lyric.style.opacity = (t >= 50 && t <= 91) ? 1 : 0;
+
+      if (t >= 88 && t <= 91) {
+        audio.volume = (91 - t) / 3;
+      }
+
+      if (t >= 91) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
   </script>
 </body>
 </html>

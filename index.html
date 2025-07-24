@@ -17,7 +17,6 @@
       overflow: hidden;
     }
 
-    /* Envelope */
     #envelope {
       position: absolute;
       top: 50%;
@@ -32,7 +31,6 @@
       cursor: pointer;
       z-index: 4;
       transition: transform 1s ease, opacity 0.8s ease;
-      -webkit-transition: transform 1s ease, opacity 0.8s ease;
     }
 
     #seal {
@@ -48,7 +46,6 @@
       box-shadow: 0 0 6px rgba(0,0,0,0.3);
     }
 
-    /* Letter background */
     #letter {
       position: absolute;
       top: 0;
@@ -62,32 +59,13 @@
       background-repeat: no-repeat;
       opacity: 0;
       transition: opacity 1s ease-in-out;
-      -webkit-transition: opacity 1s ease-in-out;
       z-index: 1;
     }
 
-    #lyric {
-      position: absolute;
-      bottom: 20px;
-      right: 30px;
-      max-width: 80%;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 16px 22px;
-      border-radius: 12px;
-      color: #cf6ba9;
-      font-size: 2em;
-      font-family: 'Brush Script MT', cursive;
-      text-shadow: 2px 2px 6px #000;
-      opacity: 0;
-      transition: opacity 0.6s ease-in-out;
-      -webkit-transition: opacity 0.6s ease-in-out;
-      z-index: 2;
-    }
-
-    /* Intro video */
+    /* 📱 Video placement — customize top/left and width for mobile layout */
     #introVideo {
       position: absolute;
-      top: 40%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 60vw;
@@ -99,12 +77,17 @@
 </head>
 <body>
 
-  <!-- Envelope with heart seal -->
   <div id="envelope">
     <div id="seal">❤️</div>
   </div>
 
-  <!-- Intro video fades in and out -->
+  <div id="letter">
+    <audio id="bg-audio" preload="auto">
+      <source src="no-me-dejes.mp4" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+  </div>
+
   <video id="introVideo" src="no-me-dejes.mp4" autoplay muted playsinline></video>
 
   <script>
@@ -117,17 +100,17 @@
       envelope.style.transform = 'translate(-50%, -50%) scale(0.1)';
       envelope.style.opacity = '0';
 
-      // Start video fade-in
-      video.style.opacity = '1';
-      video.currentTime = 0;
-      video.play();
+      video.addEventListener('loadedmetadata', () => {
+        const fadeOutTime = (video.duration - 3) * 1000;
+        video.style.opacity = '1';
+        video.currentTime = 0;
+        video.play();
 
-      // Fade-out after 3 seconds
-      setTimeout(() => {
-        video.style.opacity = '0';
-      }, 3000);
+        setTimeout(() => {
+          video.style.opacity = '0';
+        }, fadeOutTime);
+      });
 
-      // Reveal letter and start audio after delay
       setTimeout(() => {
         envelope.style.display = 'none';
         letter.style.opacity = '1';
@@ -150,13 +133,9 @@
 
     audio.addEventListener('timeupdate', () => {
       const t = audio.currentTime;
-
-      lyric.style.opacity = (t >= 50 && t <= 91) ? 1 : 0;
-
       if (t >= 88 && t <= 91) {
         audio.volume = (91 - t) / 3;
       }
-
       if (t >= 91) {
         audio.pause();
         audio.currentTime = 0;

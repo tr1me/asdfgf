@@ -104,15 +104,6 @@
     <div id="seal">❤️</div>
   </div>
 
-  <!-- Letter reveal with image, audio & lyrics -->
-  <div id="letter">
-    <audio id="bg-audio" preload="auto">
-      <source src="no-me-dejes.mp4" type="audio/mpeg">
-      Tu navegador no soporta el elemento de audio.
-    </audio>
-    <div id="lyric">Te presumo porque un verdadero amor nunca se esconde</div>
-  </div>
-
   <!-- Intro video fades in and out -->
   <video id="introVideo" src="no-me-dejes.mp4" autoplay muted playsinline></video>
 
@@ -120,7 +111,6 @@
     const envelope = document.getElementById('envelope');
     const letter = document.getElementById('letter');
     const audio = document.getElementById('bg-audio');
-    const lyric = document.getElementById('lyric');
     const video = document.getElementById('introVideo');
 
     envelope.addEventListener('click', () => {

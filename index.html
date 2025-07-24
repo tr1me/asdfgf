@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <title>Carta</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -59,10 +57,9 @@
       background-repeat: no-repeat;
       opacity: 0;
       transition: opacity 1s ease-in-out;
-      z-index: 1;
+      z-index: 2;
     }
 
-    /* 📱 Video placement — customize top/left and width for mobile layout */
     #introVideo {
       position: absolute;
       top: 50%;
@@ -71,7 +68,7 @@
       width: 30vw;
       opacity: 0;
       transition: opacity 3s ease;
-      z-index: 3;
+      z-index: 5;
     }
   </style>
 </head>
@@ -100,21 +97,22 @@
       envelope.style.transform = 'translate(-50%, -50%) scale(0.1)';
       envelope.style.opacity = '0';
 
-      video.addEventListener('loadedmetadata', () => {
-        const fadeOutTime = (video.duration - 3) * 1000;
-        video.style.opacity = '1';
-        video.currentTime = 0;
-        video.play();
-
-        setTimeout(() => {
-          video.style.opacity = '0';
-        }, fadeOutTime);
-      });
-
       setTimeout(() => {
         envelope.style.display = 'none';
         letter.style.opacity = '1';
 
+        // Start video
+        video.style.opacity = '1';
+        video.currentTime = 0;
+        video.play();
+
+        // Fade video out near end (3s before audio ends)
+        const fadeOutTime = (audio.duration - 3) * 1000;
+        setTimeout(() => {
+          video.style.opacity = '0';
+        }, fadeOutTime);
+
+        // Start audio
         audio.currentTime = 0;
         audio.volume = 0;
         audio.play().then(() => {
@@ -128,6 +126,7 @@
         }).catch(err => {
           console.warn("Playback error:", err);
         });
+
       }, 1000);
     });
 

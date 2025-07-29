@@ -41,18 +41,19 @@
 
     .flash {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      width: 120px;
+      height: 120px;
       background: white;
+      border-radius: 50%;
       opacity: 0;
       pointer-events: none;
       z-index: 9999;
-      animation: flashPulse 0.2s ease-in-out;
+      animation: flashPulse 0.3s ease-in-out;
     }
 
     @keyframes flashPulse {
       0% { opacity: 0; }
-      50% { opacity: 0.85; }
+      40% { opacity: 0.8; }
       100% { opacity: 0; }
     }
   </style>
@@ -70,27 +71,30 @@
   <audio id="shutterSound" src="shutter.mp3"></audio>
 
   <script>
-    function triggerFlash() {
+    function scatteredFlash() {
       const flash = document.createElement('div');
       flash.className = 'flash';
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 200);
-    }
 
-    function playFlashAudio() {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+
+      flash.style.left = `${x}px`;
+      flash.style.top = `${y}px`;
+
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 300);
+
       const sound = document.getElementById('shutterSound');
       sound.currentTime = 0;
       sound.play();
     }
 
-    function paparazziBurst() {
-      if (Math.random() > 0.5) {
-        triggerFlash();
-        playFlashAudio();
+    setInterval(() => {
+      const burstCount = Math.floor(Math.random() * 3) + 1; // 1–3 flashes per burst
+      for (let i = 0; i < burstCount; i++) {
+        setTimeout(scatteredFlash, i * 150);
       }
-    }
-
-    setInterval(paparazziBurst, 1500); // adjust timing for intensity
+    }, 1200);
   </script>
 
 </body>

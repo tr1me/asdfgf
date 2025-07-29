@@ -1,148 +1,123 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Carta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Era — Verified</title>
   <style>
-    * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      padding: 0;
-      height: 100vh;
-      background-color: #111;
-      font-family: sans-serif;
+      font-family: 'Playfair Display', serif;
+      background: black;
+      color: white;
       overflow: hidden;
     }
 
-    #envelope {
+    .hero-video video {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      width: 240px;
-      height: 160px;
-      background: #fff;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      cursor: pointer;
-      z-index: 4;
-      transition: transform 1s ease, opacity 0.8s ease;
-    }
-
-    #seal {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 2.5em;
-      color: red;
-      background: white;
-      border-radius: 50%;
-      padding: 6px;
-      box-shadow: 0 0 6px rgba(0,0,0,0.3);
-      pointer-events: none;
-    }
-
-    #letter {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100vh;
-      background-color: #000;
-      background-image: url('oip1.jpeg');
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      z-index: 2;
+      object-fit: cover;
+      z-index: -1;
     }
 
-    #introVideo {
+    .poetic-message {
       position: absolute;
-      top: 50%;
-      left: 15%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      opacity: 0;
-      transition: opacity 3s ease;
-      z-index: 5;
-      pointer-events: none;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 3s ease-in;
+    }
+
+    .poetic-message h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .poetic-message p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .verify-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #fff;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 8px;
+      animation: fadeIn 2s ease-in;
+    }
+
+    .card h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .card button {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: 1px solid white;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .card button:hover {
+      background: white;
+      color: black;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <div id="envelope">
-    <div id="seal">❤️</div>
+  <!-- Hero Video Section -->
+  <div class="hero-video">
+    <video autoplay muted playsinline id="newEraVideo">
+      <source src="new-era-reveal.mp4" type="video/mp4" />
+    </video>
+    <div class="poetic-message">
+      <h1>This is no ordinary garment.</h1>
+      <p>It remembers. It belongs to the future.</p>
+    </div>
   </div>
 
-  <div id="letter">
-    <audio id="bg-audio" preload="auto">
-      <source src="no-me-aud.MP3" type="audio/mpeg">
-      Tu navegador no soporta el elemento de audio.
-    </audio>
+  <!-- Verification Overlay (Shown after NFC scan or timed trigger) -->
+  <div class="verify-overlay" id="verifyOverlay">
+    <div class="card">
+      <h1>Verified</h1>
+      <p>This piece is part of the <strong>New Era</strong>. Eternal. Authentic.</p>
+      <button onclick="document.getElementById('verifyOverlay').style.display='none'">Enter</button>
+    </div>
   </div>
-
-  <video id="introVideo" src="no-me-dejes1.mp4" muted playsinline></video>
 
   <script>
-    const envelope = document.getElementById('envelope');
-    const letter = document.getElementById('letter');
-    const audio = document.getElementById('bg-audio');
-    const video = document.getElementById('introVideo');
-
-    envelope.addEventListener('click', () => {
-      envelope.style.transform = 'translate(-50%, -50%) scale(0.1)';
-      envelope.style.opacity = '0';
-
+    // Simulate an NFC trigger or timed reveal
+    const video = document.getElementById('newEraVideo');
+    video.onloadedmetadata = () => {
+      const triggerTime = video.duration - 3;
       setTimeout(() => {
-        envelope.style.display = 'none';
-        letter.style.opacity = '1';
-
-        // Sync and start both audio and video
-        video.currentTime = 0;
-        audio.currentTime = 0;
-
-        video.style.opacity = '1';
-        video.play();
-
-        audio.volume = 0;
-        audio.play().then(() => {
-          // Fade in audio
-          const fadeInDuration = 2000;
-          const interval = 100;
-          const step = 1 / (fadeInDuration / interval);
-          const fadeIn = setInterval(() => {
-            audio.volume = Math.min(audio.volume + step, 1.0);
-            if (audio.volume >= 1.0) clearInterval(fadeIn);
-          }, interval);
-        }).catch(err => console.warn("Audio playback error:", err));
-
-        // Fade out video 3 seconds before audio ends
-        audio.addEventListener('loadedmetadata', () => {
-          const fadeOutTime = (audio.duration - 3) * 1000;
-          setTimeout(() => {
-            video.style.opacity = '0';
-          }, fadeOutTime);
-        });
-
-      }, 1000);
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      const t = audio.currentTime;
-      if (t >= 88 && t <= 91) {
-        audio.volume = (91 - t) / 3;
-      }
-      if (t >= 91) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    });
+        document.getElementById('verifyOverlay').style.display = 'flex';
+      }, triggerTime * 1000);
+    };
   </script>
+
 </body>
 </html>

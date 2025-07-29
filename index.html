@@ -3,120 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Era — Verified</title>
+  <title>Authenticated Garment Reveal</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Playfair Display', serif;
       background: black;
       color: white;
+      font-family: 'Helvetica Neue', sans-serif;
       overflow: hidden;
     }
 
-    .hero-video video {
+    #authHeader {
       position: absolute;
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -1;
-    }
-
-    .poetic-message {
-      position: absolute;
-      top: 40%;
+      top: 20px;
       width: 100%;
       text-align: center;
-      animation: fadeIn 3s ease-in;
-    }
-
-    .poetic-message h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .poetic-message p {
       font-size: 1.2rem;
-      opacity: 0.8;
-    }
-
-    .verify-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
-      color: white;
-      justify-content: center;
-      align-items: center;
+      letter-spacing: 0.1em;
+      opacity: 0.95;
       z-index: 10;
     }
 
-    .card {
-      background: #111;
-      border: 1px solid #fff;
-      padding: 2rem;
-      text-align: center;
+    #shirtContainer {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      height: auto;
+      z-index: 5;
+    }
+
+    #shirtContainer video {
+      width: 100%;
       border-radius: 8px;
-      animation: fadeIn 2s ease-in;
     }
 
-    .card h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .card button {
-      padding: 0.6rem 1.2rem;
-      background: transparent;
-      border: 1px solid white;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .card button:hover {
+    .flash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background: white;
-      color: black;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+      animation: flashPulse 0.2s ease-in-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes flashPulse {
+      0% { opacity: 0; }
+      50% { opacity: 0.85; }
+      100% { opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hero Video Section -->
-  <div class="hero-video">
-    <video autoplay muted playsinline id="newEraVideo">
-      <source src="new-era-reveal.mp4" type="video/mp4" />
+  <div id="authHeader">Authenticated Product • New Era™</div>
+
+  <div id="shirtContainer">
+    <video autoplay muted loop playsinline>
+      <source src="tigershirt.mp4" type="video/mp4" />
     </video>
-    <div class="poetic-message">
-      <h1>This is no ordinary garment.</h1>
-      <p>It remembers. It belongs to the future.</p>
-    </div>
   </div>
 
-  <!-- Verification Overlay (Shown after NFC scan or timed trigger) -->
-  <div class="verify-overlay" id="verifyOverlay">
-    <div class="card">
-      <h1>Verified</h1>
-      <p>This piece is part of the <strong>New Era</strong>. Eternal. Authentic.</p>
-      <button onclick="document.getElementById('verifyOverlay').style.display='none'">Enter</button>
-    </div>
-  </div>
+  <audio id="shutterSound" src="shutter.mp3"></audio>
 
   <script>
-    // Simulate an NFC trigger or timed reveal
-    const video = document.getElementById('newEraVideo');
-    video.onloadedmetadata = () => {
-      const triggerTime = video.duration - 3;
-      setTimeout(() => {
-        document.getElementById('verifyOverlay').style.display = 'flex';
-      }, triggerTime * 1000);
-    };
+    function triggerFlash() {
+      const flash = document.createElement('div');
+      flash.className = 'flash';
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 200);
+    }
+
+    function playFlashAudio() {
+      const sound = document.getElementById('shutterSound');
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function paparazziBurst() {
+      if (Math.random() > 0.5) {
+        triggerFlash();
+        playFlashAudio();
+      }
+    }
+
+    setInterval(paparazziBurst, 1500); // adjust timing for intensity
   </script>
 
 </body>
